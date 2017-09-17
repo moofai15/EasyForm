@@ -1,9 +1,13 @@
 package com.example.teacher.easyform.fragment;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +15,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 
 import com.example.teacher.easyform.R;
+import com.example.teacher.easyform.sqlite.MyManager;
+import com.example.teacher.easyform.sqlite.MyOpenHelper;
 import com.example.teacher.easyform.utility.MyAlertDialog;
 
 /**
@@ -24,15 +31,15 @@ import com.example.teacher.easyform.utility.MyAlertDialog;
 public class MainFragment extends Fragment{
 
     //Explicit
-    private String nameString,genderString, provinceString;
+    private String nameString,genderString;
     private boolean genderABoolean = true;
     private int indexAnInt = 0;
     private String[] provinceStrings = new String[]{
-            "Select Province",
-            "Bangkok",
-            "Nan",
-            "Songsha",
-            "Trad"};
+            "โปรดเลือกจังหวัด",
+            "กรุงเทพ",
+            "น่าน",
+            "พัทลุง",
+            "ปทุมธานี"};
 
 
     @Nullable
@@ -54,6 +61,9 @@ public class MainFragment extends Fragment{
 
         //Spinner Controller
         spinnerController();
+
+        //Crate ListView
+
 
     }
 
@@ -124,8 +134,16 @@ public class MainFragment extends Fragment{
                     myAlertDialog.myDialg(getResources().getString(R.string.title),
                             getResources().getString(R.string.message));
                 } else {
+                    MyManager myManager = new MyManager(getActivity());
+                    myManager.addNametoSQLite(
+                            nameString,
+                            genderString,
+                            provinceStrings[indexAnInt]);
 
-                }
+                    //  Create ListView
+                    createListView();
+
+                }   //If
 
 
 
@@ -133,5 +151,46 @@ public class MainFragment extends Fragment{
 
             }   //onClick
         });
+    }
+
+    private void createListView() {
+        try {
+
+            SQLiteDatabase sqLiteDatabase = getActivity().openOrCreateDatabase(
+                    MyOpenHelper.database_name,
+                    Context.MODE_PRIVATE,
+                    null
+            );
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM nameTABLE",null);
+            cursor.moveToFirst();
+            String[] nameStrings = new String[cursor.getCount()];
+            String[] genderStrings = new String[cursor.getCount()];
+            String[] provinceStrings = new String[cursor.getCount()];
+
+            for (int i=0;i<cursor.getCount();i+=1) {
+
+                nameStrings[i] = cursor.getString(1);
+                genderStrings[i] = cursor.getString(2);
+                provinceStrings[i] = cursor.getString(3);
+                Log.d("17SepV1","Name[" + 1 +"] ==> " + nameStrings[i]);
+                cursor.moveToNext();
+
+
+
+
+            }   //for
+
+            ListView listView = (ListView) getView().findViewById(R.id.livName);
+            ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(
+                    getActivity(),
+                    android.R.layout.simple_list_item_1,
+                    nameStrings
+            );
+            listView.setAdapter(stringArrayAdapter);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }   //Main Class
