@@ -29,6 +29,7 @@
 
         <!--Name-->
         <EditText
+            android:id="@+id/edtName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Name :"
@@ -50,16 +51,19 @@
 
     <!--Radio Button-->
         <RadioGroup
+            android:id="@+id/ragGender"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <RadioButton
+            android:id="@+id/radMale"
             android:textColor="@color/colorPrimaryDark"
             android:text="Male"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <RadioButton
+                android:id="@+id/radFemale"
                 android:layout_marginLeft="20dp"
                 android:textColor="@color/colorPrimaryDark"
                 android:text="Female"
@@ -79,10 +83,13 @@
 
     <!--List-->
     <Spinner
+        android:id="@+id/spnProvince"
+        android:layout_marginBottom="@dimen/padding"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <Button
+        android:id="@+id/btnAddData"
         android:background="@color/colorPrimary"
         android:textColor="#ffffff"
         android:text="Add Data"
@@ -90,7 +97,7 @@
         android:layout_height="wrap_content" />
 
     <ListView
-        android:id="@+id/LivName"
+        android:id="@+id/livName"
         android:layout_marginTop="@dimen/padding"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></ListView>
